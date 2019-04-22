@@ -1,30 +1,56 @@
-/*
- * Create a list that holds all of your cards
- */
+// List of cards symbols
+const cards = ['fa-anchor', 'fa-bicycle', 'fa-bolt', 'fa-bomb', 'fa-cube', 'fa-diamond', 'fa-leaf', 'fa-paper-plane-o'];
 
-
-/*
- * Display the cards on the page
- *   - shuffle the list of cards using the provided "shuffle" method below
- *   - loop through each card and create its HTML
- *   - add each card's HTML to the page
- */
-
-// Shuffle function from http://stackoverflow.com/a/2450976
-function shuffle(array) {
-    var currentIndex = array.length, temporaryValue, randomIndex;
-
-    while (currentIndex !== 0) {
-        randomIndex = Math.floor(Math.random() * currentIndex);
-        currentIndex -= 1;
-        temporaryValue = array[currentIndex];
-        array[currentIndex] = array[randomIndex];
-        array[randomIndex] = temporaryValue;
-    }
-
-    return array;
+// New deck with pairs of cards
+const deck = [...cards];
+// Duplicate the symbols
+for(const card of cards) {
+	deck.push(card);
 }
 
+/**
+* @description Shuffle function from http://stackoverflow.com/a/2450976
+* @function
+*/
+function shuffle(array) {
+	var currentIndex = array.length, temporaryValue, randomIndex;
+
+	while (currentIndex !== 0) {
+		randomIndex = Math.floor(Math.random() * currentIndex);
+		currentIndex -= 1;
+		temporaryValue = array[currentIndex];
+		array[currentIndex] = array[randomIndex];
+		array[randomIndex] = temporaryValue;
+	}
+
+	return array;
+}
+
+/**
+* @description Display a new random deck on the page
+* @function
+*/
+function displayDeck() {
+	// Shuffle cards deck
+	shuffle(deck);
+
+	// Create a document fragment to improve page performance
+	const newDocumentFragment = document.createDocumentFragment();
+
+	// Loop through each card and create its HTML
+	for(const card of deck) {
+		const newCard = document.createElement('li');
+		newCard.classList.add('card');
+		newCard.innerHTML = '<i class="fa ' + card + '"></i>';
+		newDocumentFragment.appendChild(newCard);
+	}
+
+	// Add each card's HTML to the page
+	document.querySelector('.deck').appendChild(newDocumentFragment);
+}
+
+// Call function to start new game
+displayDeck();
 
 /*
  * set up the event listener for a card. If a card is clicked:
