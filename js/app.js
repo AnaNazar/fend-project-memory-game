@@ -125,7 +125,32 @@ function compareCards(){
 			hideCards(pairOfCards[0], pairOfCards[1]);
 		}, 500);
 	}
+
+	// Increase one move to the counter
+	movesCounter.newMove();
 }
+
+/**
+* @description Move Counter
+* @property {number}	moves 			Represent the number of player moves
+* @property {function}	newMove			Increase a move to the counter
+* @property {function}	resetCounter	Reset the counter value to zero
+* @property {function}	printMoves		Display the counter value
+*/
+var movesCounter = {
+	moves : 0,
+	newMove : function() {
+		this.moves += 1;
+		return document.querySelector('.moves').textContent = this.moves === 1 ? this.moves + ' Move' : this.moves + ' Moves';
+	},
+	resetCounter : function() {
+		this.moves = 0;
+		return document.querySelector('.moves').innerHTML = this.moves + ' Moves';
+	},
+	printMoves : function() {
+		return this.moves === 1 ? this.moves + ' Move' : this.moves + ' Moves';
+	}
+};
 
 document.querySelector('.deck').addEventListener('click', function(event) {
 	// Show card selected
@@ -139,3 +164,6 @@ document.querySelector('.deck').addEventListener('click', function(event) {
 		compareCards();
 	}
 });
+
+// Initialize the Move Counter's value
+movesCounter.resetCounter();
