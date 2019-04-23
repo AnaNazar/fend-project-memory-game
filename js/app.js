@@ -62,3 +62,80 @@ displayDeck();
  *    + increment the move counter and display it on the page (put this functionality in another function that you call from this one)
  *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
  */
+
+/**
+* @description Verify open cards in the deck
+* @function
+* @returns {number} Return the number of open cards in the deck
+*/
+function verifyOpenCards() {
+	return document.querySelector('.deck').querySelectorAll('.open').length;
+}
+
+/**
+* @description Display card's symbol
+* @function
+* @param event
+*/
+function showCard(event){
+	// Verify whether the target is a card element and if is not already opened
+	if((event.target.nodeName.toLowerCase() === 'li') && !(event.target.classList.contains('open'))) {
+		event.target.classList.add('open', 'show');
+	}
+}
+
+/**
+* @description Lock the matching cards at the open position
+* @function
+* @param cardOne
+* @param cardTwo
+*/
+function lockCards(cardOne, cardTwo){
+	// Remove class
+	cardOne.classList.remove('open', 'show');
+	cardTwo.classList.remove('open', 'show');
+	// Add class
+	cardOne.classList.add('match');
+	cardTwo.classList.add('match');
+}
+
+/**
+* @description Set cards at hidden position
+* @function
+* @param cardOne
+* @param cardTwo
+*/
+function hideCards(cardOne, cardTwo){
+	// Remove class
+	cardOne.classList.remove('open', 'show');
+	cardTwo.classList.remove('open', 'show');
+}
+
+/**
+* @description Check matching cards in the deck
+* @function
+*/
+function compareCards(){
+	const pairOfCards = document.querySelector('.deck').querySelectorAll('.open');
+
+	if( pairOfCards[0].querySelector('i').className === pairOfCards[1].querySelector('i').className ) {
+		lockCards(pairOfCards[0], pairOfCards[1]);
+	} else {
+		setTimeout(function() {
+			hideCards(pairOfCards[0], pairOfCards[1]);
+		}, 500);
+	}
+}
+
+document.querySelector('.deck').addEventListener('click', function(event) {
+	// Show card selected
+	showCard(event);
+
+	// Return the number of open cards in the deck
+	const openCards = verifyOpenCards();
+
+	// Compare two open cards
+	if(openCards === 2) {
+		compareCards();
+	}
+});
