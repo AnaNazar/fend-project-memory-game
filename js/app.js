@@ -128,6 +128,7 @@ function compareCards(){
 
 	// Increase one move to the counter
 	movesCounter.newMove();
+	rating.updateRating(movesCounter.moves);
 }
 
 /**
@@ -152,6 +153,55 @@ var movesCounter = {
 	}
 };
 
+/**
+* @description Change the star symbol
+* @function
+* @param starSymbol
+*/
+function changeStar(starSymbol) {
+	starSymbol.classList.remove('fa-star');
+	starSymbol.classList.add('fa-star-o');
+}
+
+/**
+* @description Star Rating Board
+* @property {number}	stars 			Represent the number of stars achieve by the player
+* @property {function}	updateRating	Set the number of stars according to the number of player moves
+* @property {function}	resetRating		Reset the number os stars to 3 (maximum value)
+* @property {function}	printRating		Display the number of stars achieved
+*/
+var rating = {
+	stars : 3,
+	updateRating : function(numberOfMoves) {
+		this.moves = numberOfMoves;
+		const stars = document.querySelector('.stars').querySelectorAll('.fa');
+
+		if(this.moves > 20) {
+			this.stars = 0;
+		} else if(this.moves > 16) {
+			this.stars = 1;
+		} else if(this.moves > 12) {
+			this.stars = 2;
+		} else {
+			this.stars = 3;
+		}
+
+		for(let i = 3; i > this.stars; i--) {
+			changeStar(stars[i - 1]);
+		}
+	},
+	resetRating : function() {
+		this.stars = 3;
+		const stars = document.querySelector('.stars').querySelectorAll('.fa');
+		for(const star of stars) {
+			star.className = 'fa fa-star';
+		}
+	},
+	printRating : function() {
+		return this.stars === 1 ? this.stars + ' Star' : this.stars + ' Stars';
+	}
+};
+
 document.querySelector('.deck').addEventListener('click', function(event) {
 	// Show card selected
 	showCard(event);
@@ -167,3 +217,6 @@ document.querySelector('.deck').addEventListener('click', function(event) {
 
 // Initialize the Move Counter's value
 movesCounter.resetCounter();
+
+// Initialize the Rating Board
+rating.resetRating();
