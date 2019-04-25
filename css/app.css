@@ -104,6 +104,10 @@ h1 {
     display: inline-block;
 }
 
+.score-panel .moves {
+    padding: 0 5px 0 0;
+}
+
 .score-panel .restart {
     float: right;
     cursor: pointer;

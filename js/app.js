@@ -81,6 +81,12 @@ function showCard(event){
 	// Verify whether the target is a card element and if is not already opened
 	if((event.target.nodeName.toLowerCase() === 'li') && !(event.target.classList.contains('open'))) {
 		event.target.classList.add('open', 'show');
+
+		// Remove event listener that call the timer's run function after the player's first move
+		// Remove listener from all the cards
+		for(const card of cardsEventListener) {
+			card.removeEventListener('click', runGameTimer);
+		}
 	}
 }
 
@@ -202,6 +208,75 @@ var rating = {
 	}
 };
 
+/**
+* @description Timer Controller
+* @property {number}	seconds
+* @property {number}	minutes
+* @property {number}	hours
+* @property {function}	printTimerBoard Display the time on the board game
+* @property {function}	updateTimer 	Increase one second and update minutes and hours if necessary
+* @property {function}	resetTimer		Reset seconds, minutes and hours variables to 0
+* @property {function}	resetTimer		Display the amount of time the player took to solve the game
+*/
+const timer = {
+	seconds : 0,
+	minutes : 0,
+	hours : 0,
+	printTimerBoard : function() {
+		// Print updated timer on the Board Game
+		document.querySelector('.timer').textContent = (this.hours < 10 ? '0' + this.hours : this.hours) + ':' + (this.minutes < 10 ? '0' + this.minutes : this.minutes) + ':' + (this.seconds < 10 ? '0' + this.seconds : this.seconds);
+	},
+	updateTimer : function() {
+		this.seconds += 1;
+
+		// Verify if one minute has been completed
+		if(this.seconds % 60 === 0) {
+			this.minutes++;
+			this.seconds = 0;
+			// Verify if one hour has been completed
+			if(this.minutes % 60 === 0) {
+				this.hours++;
+				this.minutes = 0;
+			}
+		}
+
+		// Print updated timer on the Board Game
+		this.printTimerBoard();
+	},
+	resetTimer : function() {
+		this.seconds = 0;
+		this.minutes = 0;
+		this.hours = 0;
+
+		// Print updated timer on the Board Game
+		this.printTimerBoard();
+	},
+	printTimer : function() {
+		return (this.hours < 10 ? '0' + this.hours : this.hours) + ':' + (this.minutes < 10 ? '0' + this.minutes : this.minutes) + ':' + (this.seconds < 10 ? '0' + this.seconds : this.seconds);
+	}
+};
+
+// Timer variable
+let gameTimer;
+
+/**
+* @description Set the time interval to one second
+* @function
+*/
+function runGameTimer() {
+	gameTimer = setInterval(function(){
+		// Invoke timer's method
+		timer.updateTimer();
+	}, 1000);
+}
+
+// Add event listener to all cards to run the timer on the player's first move
+const cardsEventListener = document.querySelector('.deck').querySelectorAll('.card');
+for(const card of cardsEventListener) {
+	card.addEventListener('click', runGameTimer);
+}
+
+// Add event listener to process player's mouse click  on the deck element
 document.querySelector('.deck').addEventListener('click', function(event) {
 	// Show card selected
 	showCard(event);
@@ -220,3 +295,6 @@ movesCounter.resetCounter();
 
 // Initialize the Rating Board
 rating.resetRating();
+
+// Initialize the game's timer
+timer.resetTimer();
