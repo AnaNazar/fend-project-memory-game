@@ -27,117 +27,6 @@ function shuffle(array) {
 }
 
 /**
-* @description Display a new random deck on the page
-* @function
-*/
-function displayDeck() {
-	// Shuffle cards deck
-	shuffle(deck);
-
-	// Create a document fragment to improve page performance
-	const newDocumentFragment = document.createDocumentFragment();
-
-	// Loop through each card and create its HTML
-	for(const card of deck) {
-		const newCard = document.createElement('li');
-		newCard.classList.add('card');
-		newCard.innerHTML = '<i class="fa ' + card + '"></i>';
-		newDocumentFragment.appendChild(newCard);
-	}
-
-	// Add each card's HTML to the page
-	document.querySelector('.deck').appendChild(newDocumentFragment);
-}
-
-// Call function to start new game
-displayDeck();
-
-/*
- * set up the event listener for a card. If a card is clicked:
- *  - display the card's symbol (put this functionality in another function that you call from this one)
- *  - add the card to a *list* of "open" cards (put this functionality in another function that you call from this one)
- *  - if the list already has another card, check to see if the two cards match
- *    + if the cards do match, lock the cards in the open position (put this functionality in another function that you call from this one)
- *    + if the cards do not match, remove the cards from the list and hide the card's symbol (put this functionality in another function that you call from this one)
- *    + increment the move counter and display it on the page (put this functionality in another function that you call from this one)
- *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
- */
-
-/**
-* @description Verify open cards in the deck
-* @function
-* @returns {number} Return the number of open cards in the deck
-*/
-function verifyOpenCards() {
-	return document.querySelector('.deck').querySelectorAll('.open').length;
-}
-
-/**
-* @description Display card's symbol
-* @function
-* @param event
-*/
-function showCard(event){
-	// Verify whether the target is a card element and if is not already opened
-	if((event.target.nodeName.toLowerCase() === 'li') && !(event.target.classList.contains('open'))) {
-		event.target.classList.add('open', 'show');
-
-		// Remove event listener that call the timer's run function after the player's first move
-		// Remove listener from all the cards
-		for(const card of cardsEventListener) {
-			card.removeEventListener('click', runGameTimer);
-		}
-	}
-}
-
-/**
-* @description Lock the matching cards at the open position
-* @function
-* @param cardOne
-* @param cardTwo
-*/
-function lockCards(cardOne, cardTwo){
-	// Remove class
-	cardOne.classList.remove('open', 'show');
-	cardTwo.classList.remove('open', 'show');
-	// Add class
-	cardOne.classList.add('match');
-	cardTwo.classList.add('match');
-}
-
-/**
-* @description Set cards at hidden position
-* @function
-* @param cardOne
-* @param cardTwo
-*/
-function hideCards(cardOne, cardTwo){
-	// Remove class
-	cardOne.classList.remove('open', 'show');
-	cardTwo.classList.remove('open', 'show');
-}
-
-/**
-* @description Check matching cards in the deck
-* @function
-*/
-function compareCards(){
-	const pairOfCards = document.querySelector('.deck').querySelectorAll('.open');
-
-	if( pairOfCards[0].querySelector('i').className === pairOfCards[1].querySelector('i').className ) {
-		lockCards(pairOfCards[0], pairOfCards[1]);
-	} else {
-		setTimeout(function() {
-			hideCards(pairOfCards[0], pairOfCards[1]);
-		}, 500);
-	}
-
-	// Increase one move to the counter
-	movesCounter.newMove();
-	rating.updateRating(movesCounter.moves);
-}
-
-/**
 * @description Move Counter
 * @property {number}	moves 			Represent the number of player moves
 * @property {function}	newMove			Increase a move to the counter
@@ -155,7 +44,7 @@ var movesCounter = {
 		return document.querySelector('.moves').innerHTML = this.moves + ' Moves';
 	},
 	printMoves : function() {
-		return this.moves === 1 ? this.moves + ' Move' : this.moves + ' Moves';
+		return this.moves === 1 ? this.moves + ' move' : this.moves + ' moves';
 	}
 };
 
@@ -204,7 +93,7 @@ var rating = {
 		}
 	},
 	printRating : function() {
-		return this.stars === 1 ? this.stars + ' Star' : this.stars + ' Stars';
+		return this.stars === 1 ? this.stars + ' star' : this.stars + ' stars';
 	}
 };
 
@@ -271,20 +160,161 @@ function runGameTimer() {
 }
 
 /**
+* @description Verify open cards in the deck
+* @function
+* @returns {number} Return the number of open cards in the deck
+*/
+function verifyOpenCards() {
+	return document.querySelector('.deck').querySelectorAll('.open').length;
+}
+
+/**
+* @description Display card's symbol
+* @function
+* @param event
+*/
+function showCard(event){
+	// Verify whether the target is a card element and if is not already opened
+	if((event.target.nodeName.toLowerCase() === 'li') && !(event.target.classList.contains('open'))) {
+		event.target.classList.add('open', 'show');
+
+		// Remove event listener that call the timer's run function after the player's first move
+		// Remove listener from all the cards
+		let cardsEventListener = document.querySelector('.deck').querySelectorAll('.card');
+		for(const card of cardsEventListener) {
+			card.removeEventListener('click', runGameTimer);
+		}
+	}
+}
+
+/**
+* @description Lock the matching cards at the open position
+* @function
+* @param cardOne
+* @param cardTwo
+*/
+function lockCards(cardOne, cardTwo){
+	// Remove class
+	cardOne.classList.remove('open', 'show');
+	cardTwo.classList.remove('open', 'show');
+	// Add class
+	cardOne.classList.add('match');
+	cardTwo.classList.add('match');
+}
+
+/**
+* @description Set cards at hidden position
+* @function
+* @param cardOne
+* @param cardTwo
+*/
+function hideCards(cardOne, cardTwo){
+	// Remove class
+	cardOne.classList.remove('open', 'show');
+	cardTwo.classList.remove('open', 'show');
+}
+
+/**
+* @description Check matching cards in the deck
+* @function
+*/
+function compareCards(){
+	const pairOfCards = document.querySelector('.deck').querySelectorAll('.open');
+
+	if( pairOfCards[0].querySelector('i').className === pairOfCards[1].querySelector('i').className ) {
+		lockCards(pairOfCards[0], pairOfCards[1]);
+	} else {
+		setTimeout(function() {
+			hideCards(pairOfCards[0], pairOfCards[1]);
+		}, 500);
+	}
+
+	// Increase one move to the counter
+	movesCounter.newMove();
+	rating.updateRating(movesCounter.moves);
+}
+
+/**
+* @description Add event listener to all cards to run the timer on the player's first move
+* @function
+*/
+function addListenerTimer() {
+	let cardsEventListener = document.querySelector('.deck').querySelectorAll('.card');
+	for(const card of cardsEventListener) {
+		card.addEventListener('click', runGameTimer);
+	}
+}
+
+/**
+* @description Control the game's flow
+* @function
+*/
+function gameController(event) {
+	// Show card selected
+	showCard(event);
+
+	// Return the number of open cards in the deck
+	const openCards = verifyOpenCards();
+
+	// Compare two open cards
+	if(openCards === 2) {
+		compareCards();
+	}
+}
+
+/**
+* @description Display a new random deck on the page
+* @function
+*/
+function displayDeck() {
+	// Shuffle cards deck
+	shuffle(deck);
+
+	// Create a document fragment to improve page performance
+	const newDocumentFragment = document.createDocumentFragment();
+
+	// Create a new deck element
+	const newDeck = document.createElement('ul');
+	newDeck.classList.add('deck');
+
+	// Loop through each card and create its HTML
+	for(const card of deck) {
+		const newCard = document.createElement('li');
+		newCard.classList.add('card');
+		newCard.innerHTML = '<i class="fa ' + card + '"></i>';
+		// Add card's HTML to the deck element
+		newDeck.appendChild(newCard);
+	}
+
+	// Add deck's HTML to the document fragment
+	newDocumentFragment.appendChild(newDeck);
+
+	// Add the HTML with the deck and cards to the page
+	document.querySelector('.container').appendChild(newDocumentFragment);
+
+	// Call function to attach to each card, 
+	// an event listener that runs the game's timer
+	// when one card it is clicked
+	addListenerTimer();
+	// Attach event listener to the deck, in order to run the game's controller
+	document.querySelector('.deck').addEventListener('click', gameController);
+}
+
+/**
 * @description Reset the values of the moves counter, rating board, timer
 * 			   and display a new set of cards
 * @function
 */
 function restartGame() {
-	// Remove all the cards from the deck
-	const cards = document.querySelector('.deck').querySelectorAll('li');
-	for(const card of cards) {
-		document.querySelector('.deck').removeChild(card);
-	}
+	// Remove the deck
+	const currentDeck = document.querySelector('.deck');
+	document.querySelector('.container').removeChild(currentDeck);
 	// Reset the move counter
 	movesCounter.resetCounter();
 	// Reset the rating board
 	rating.resetRating();
+	// Stop the timer
+	clearInterval(gameTimer);
 	// Reset the timer's values to 0
 	timer.resetTimer();
 	// Display a new set of cards
@@ -296,26 +326,6 @@ document.querySelector('.restart').addEventListener('click', function() {
 	restartGame();
 });
 
-// Add event listener to all cards to run the timer on the player's first move
-const cardsEventListener = document.querySelector('.deck').querySelectorAll('.card');
-for(const card of cardsEventListener) {
-	card.addEventListener('click', runGameTimer);
-}
-
-// Add event listener to process player's mouse click  on the deck element
-document.querySelector('.deck').addEventListener('click', function(event) {
-	// Show card selected
-	showCard(event);
-
-	// Return the number of open cards in the deck
-	const openCards = verifyOpenCards();
-
-	// Compare two open cards
-	if(openCards === 2) {
-		compareCards();
-	}
-});
-
 // Initialize the Move Counter's value
 movesCounter.resetCounter();
 
@@ -324,3 +334,6 @@ rating.resetRating();
 
 // Initialize the game's timer
 timer.resetTimer();
+
+// Call function to start the game
+displayDeck();
