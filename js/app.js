@@ -232,6 +232,16 @@ function compareCards(){
 	// Increase one move to the counter
 	movesCounter.newMove();
 	rating.updateRating(movesCounter.moves);
+
+	// Store all the cards of the deck
+	const cardsTotal = document.querySelector('.deck').querySelectorAll('.card');
+	// Store all the matched cards of the deck
+	const cardsMatched = document.querySelector('.deck').querySelectorAll('.match');
+	// Check whether all the cards were matched
+	if( cardsMatched.length === cardsTotal.length ) {
+		clearInterval(gameTimer);
+		displayPopUp();
+	}
 }
 
 /**
@@ -325,6 +335,35 @@ function restartGame() {
 document.querySelector('.restart').addEventListener('click', function() {
 	restartGame();
 });
+
+/**
+* @description Display a pop up when the game is solved
+* @function
+*/
+function displayPopUp() {
+
+	// Create a document fragment to improve page performance
+	const newDocumentFragment = document.createDocumentFragment();
+
+	// Create pop up structure
+	const newPopUp = document.createElement('div');
+	newPopUp.classList.add('popup');
+	newPopUp.innerHTML = '<div class="container"><div class="content"><i class="fa fa-trophy"></i><h2>Congratulations! You Won!</h2><p>You solved the game in ' + timer.printTimer() + ' with ' + movesCounter.printMoves() + ' and rating of ' + rating.printRating() + '.</p><p>Wooooooo!</p><span class="new-game">Play again!</span></div></div>';
+	newDocumentFragment.appendChild(newPopUp);
+
+	// Add pop up HTML to the page
+	document.querySelector('body').querySelector('.container').appendChild(newDocumentFragment);
+
+	// Restart the game when the new game button is clicked
+	document.querySelector('.new-game').addEventListener('click', function(){
+		const popUp = document.querySelector('.popup');
+		restartGame();
+		popUp.classList.add('fadeOut');
+		setTimeout(function() {
+			document.querySelector('body').querySelector('.container').removeChild(popUp);
+		}, 500);
+	});
+}
 
 // Initialize the Move Counter's value
 movesCounter.resetCounter();
