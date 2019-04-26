@@ -270,6 +270,32 @@ function runGameTimer() {
 	}, 1000);
 }
 
+/**
+* @description Reset the values of the moves counter, rating board, timer
+* 			   and display a new set of cards
+* @function
+*/
+function restartGame() {
+	// Remove all the cards from the deck
+	const cards = document.querySelector('.deck').querySelectorAll('li');
+	for(const card of cards) {
+		document.querySelector('.deck').removeChild(card);
+	}
+	// Reset the move counter
+	movesCounter.resetCounter();
+	// Reset the rating board
+	rating.resetRating();
+	// Reset the timer's values to 0
+	timer.resetTimer();
+	// Display a new set of cards
+	displayDeck();
+}
+
+// Add event listener to the restart button
+document.querySelector('.restart').addEventListener('click', function() {
+	restartGame();
+});
+
 // Add event listener to all cards to run the timer on the player's first move
 const cardsEventListener = document.querySelector('.deck').querySelectorAll('.card');
 for(const card of cardsEventListener) {
