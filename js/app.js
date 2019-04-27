@@ -27,6 +27,48 @@ function shuffle(array) {
 }
 
 /**
+* @description Create a fade in effect on the target element
+* @function
+* @param targetElement The HTML target element
+*/
+function fadeInElement(targetElement) {
+	let opacity = 0;
+	const frameRate = setInterval(animationFrame, 24);
+
+	function animationFrame() {
+		targetElement.style.opacity = opacity;
+		if( opacity < 1) {
+			opacity += 0.1;
+			targetElement.style.opacity = opacity;
+		} else {
+			clearInterval(frameRate);
+			targetElement.style.opacity = 1;
+		}
+	}
+}
+
+/**
+* @description Create a fade out effect on the target element
+* @function
+* @param targetElement The HTML target element
+*/
+function fadeOutElement(targetElement) {
+	let opacity = 1;
+	const frameRate = setInterval(animationFrame, 24);
+
+	function animationFrame() {
+		targetElement.style.opacity = opacity;
+		if( opacity > 0 ) {
+			opacity -= 0.1;
+			targetElement.style.opacity = opacity;
+		} else {
+			clearInterval(frameRate);
+			targetElement.style.opacity = 0;
+		}
+	}
+}
+
+/**
 * @description Move Counter
 * @property {number}	moves 			Represent the number of player moves
 * @property {function}	newMove			Increase a move to the counter
@@ -349,17 +391,20 @@ function displayPopUp() {
 	const newPopUp = document.createElement('div');
 	newPopUp.classList.add('popup');
 	newPopUp.innerHTML = '<div class="pop-up-container"><div class="content"><i class="fa fa-trophy"></i><h2>Congratulations! You Won!</h2><p>You solved the game in ' + timer.printTimer() + ' with ' + movesCounter.printMoves() + ' and rating of ' + rating.printRating() + '.</p><p>Wooooooo!</p><span class="new-game">Play again!</span></div></div>';
+
 	newPopUp.style.height = document.querySelector('.container').offsetHeight + 1 + 'px';
+	newPopUp.style.opacity = 0;
 	newDocumentFragment.appendChild(newPopUp);
 
 	// Add pop up HTML to the page
 	document.querySelector('body').appendChild(newDocumentFragment);
+	fadeInElement(document.querySelector('.popup'));
 
 	// Restart the game when the new game button is clicked
 	document.querySelector('.new-game').addEventListener('click', function(){
 		const popUp = document.querySelector('.popup');
 		restartGame();
-		popUp.classList.add('fadeOut');
+		fadeOutElement(popUp);
 		setTimeout(function() {
 			document.querySelector('body').removeChild(popUp);
 		}, 500);
