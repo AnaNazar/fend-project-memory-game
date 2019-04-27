@@ -348,11 +348,12 @@ function displayPopUp() {
 	// Create pop up structure
 	const newPopUp = document.createElement('div');
 	newPopUp.classList.add('popup');
-	newPopUp.innerHTML = '<div class="container"><div class="content"><i class="fa fa-trophy"></i><h2>Congratulations! You Won!</h2><p>You solved the game in ' + timer.printTimer() + ' with ' + movesCounter.printMoves() + ' and rating of ' + rating.printRating() + '.</p><p>Wooooooo!</p><span class="new-game">Play again!</span></div></div>';
+	newPopUp.innerHTML = '<div class="pop-up-container"><div class="content"><i class="fa fa-trophy"></i><h2>Congratulations! You Won!</h2><p>You solved the game in ' + timer.printTimer() + ' with ' + movesCounter.printMoves() + ' and rating of ' + rating.printRating() + '.</p><p>Wooooooo!</p><span class="new-game">Play again!</span></div></div>';
+	newPopUp.style.height = document.querySelector('.container').offsetHeight + 1 + 'px';
 	newDocumentFragment.appendChild(newPopUp);
 
 	// Add pop up HTML to the page
-	document.querySelector('body').querySelector('.container').appendChild(newDocumentFragment);
+	document.querySelector('body').appendChild(newDocumentFragment);
 
 	// Restart the game when the new game button is clicked
 	document.querySelector('.new-game').addEventListener('click', function(){
@@ -360,7 +361,7 @@ function displayPopUp() {
 		restartGame();
 		popUp.classList.add('fadeOut');
 		setTimeout(function() {
-			document.querySelector('body').querySelector('.container').removeChild(popUp);
+			document.querySelector('body').removeChild(popUp);
 		}, 500);
 	});
 }

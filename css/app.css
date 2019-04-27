@@ -26,34 +26,36 @@ body {
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    max-width: 600px;
+    margin: auto;
+    padding: 0 15px;
 }
 
 h1 {
     font-family: 'Open Sans', sans-serif;
+    font-size: 1.9em;
     font-weight: 300;
+    margin: 0.5em 0;
 }
 
-/*
- * Styles for the deck of cards
- */
-
+/* Deck of cards */
 .deck {
-    width: 660px;
-    min-height: 680px;
+    width: 100%;
+    min-height: 560px;
     background: linear-gradient(160deg, #02ccba 0%, #aa7ecd 100%);
-    padding: 32px;
     border-radius: 10px;
     box-shadow: 12px 15px 20px 0 rgba(46, 61, 73, 0.5);
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
-    margin: 0 0 3em;
+    margin: 0 0 25px;
+    padding: 15px 25px;
 }
 
 .deck .card {
-    height: 125px;
-    width: 125px;
+    height: 115px;
+    width: 115px;
     background: #2e3d49;
     font-size: 0;
     color: #ffffff;
@@ -81,22 +83,25 @@ h1 {
     font-size: 33px;
 }
 
-/*
- * Styles for the Score Panel
- 
- */
+.deck .card.unmatch {
+    cursor: default;
+    background: #f95b3c;
+    font-size: 33px;
+}
 
+/* Score Panel */
 .score-panel {
-    text-align: left;
-    width: 345px;
+    width: 100%;
+    max-width: 350px;
     margin-bottom: 10px;
 }
 
 .score-panel .stars {
-    margin: 0;
-    padding: 0;
     display: inline-block;
-    margin: 0 5px 0 0;
+    width: 20%;
+    padding: 0;
+    margin: 0;
+    text-align: center;
 }
 
 .score-panel .stars li {
@@ -105,10 +110,143 @@ h1 {
 }
 
 .score-panel .moves {
-    padding: 0 5px 0 0;
+    display: inline-block;
+    width: 33%;
+    text-align: center;
+}
+
+.score-panel .timer {
+    display: inline-block;
+    width: 30%;
+    text-align: left;
 }
 
 .score-panel .restart {
-    float: right;
+    display: inline-block;
+    width: 30px;
+    background-color: #555555;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    color: #ffffff;
+    line-height: 30px;
+    text-align: center;
     cursor: pointer;
+}
+
+.score-panel .restart:hover {
+    background-color: #444444;
+}
+
+/* Pop Up Game Solved */
+.popup {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: white;
+    height: 100vh;
+}
+
+.popup .pop-up-container {
+    position: relative;
+    display: table;
+    max-width: 260px;
+    height: inherit;
+    margin: auto;
+}
+
+.popup .pop-up-container .content {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.popup .pop-up-container .content i {
+    font-size: 50px;
+    color: #b8860b;
+    display: inline-block;
+    border: solid 3px #b8860b;
+    border-radius: 100px;
+    width: 100px;
+    height: 100px;
+    line-height: 96px;
+}
+
+.popup .pop-up-container .content h2 {
+    font-size: 30px;
+}
+
+.popup .pop-up-container .content .new-game {
+    display: inline-block;
+    background-color: #05bdad;
+    color: white;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin: 20px;
+}
+
+.popup .pop-up-container .content .new-game:hover {
+    background-color: #05a295;
+}
+
+/* RESPONSIVE */
+@media screen and (max-width: 768px) {
+    /* Container */
+    .container {
+        max-width: 530px;
+    }
+    
+    /* Deck of cards */
+    .deck {
+        min-height: 515px;
+        padding: 25px;
+    }
+    
+    .deck .card {
+        height: 100px;
+        width: 100px;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    /* Container */
+    .container {
+        max-width: 464px;
+    }
+
+    /* Deck of cards */
+    .deck {
+        min-height: 460px;
+    }
+    
+    .deck .card {
+        height: 85px;
+        width: 85px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    /* Container */
+    .container {
+        width: 320px;
+    }
+
+    /* Deck of cards */
+    .deck {
+        min-height: 320px;
+        padding: 20px 15px;
+    }
+    
+    .deck .card {
+        height: 55px;
+        width: 55px;
+    }
+
+    .deck .card.show,
+    .deck .card.match,
+    .deck .card.unmatch {
+        font-size: 24px;
+    }
 }
