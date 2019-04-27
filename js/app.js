@@ -391,8 +391,11 @@ function displayPopUp() {
 	const newPopUp = document.createElement('div');
 	newPopUp.classList.add('popup');
 	newPopUp.innerHTML = '<div class="pop-up-container"><div class="content"><i class="fa fa-trophy"></i><h2>Congratulations! You Won!</h2><p>You solved the game in ' + timer.printTimer() + ' with ' + movesCounter.printMoves() + ' and rating of ' + rating.printRating() + '.</p><p>Wooooooo!</p><span class="new-game">Play again!</span></div></div>';
-
-	newPopUp.style.height = document.querySelector('.container').offsetHeight + 1 + 'px';
+	if( window.innerHeight >= document.querySelector('.container').offsetHeight ) {
+		newPopUp.style.height = window.innerHeight + 1 + 'px';
+	} else {
+		newPopUp.style.height = document.querySelector('.container').offsetHeight + 1 + 'px';
+	}	
 	newPopUp.style.opacity = 0;
 	newDocumentFragment.appendChild(newPopUp);
 
