@@ -211,20 +211,94 @@ function verifyOpenCards() {
 }
 
 /**
+* @description Create a flip card effect on the target element
+* @function
+* @param targetElement The HTML target element
+*/
+function flipCard(targetElement) {
+	let angle = -180;
+	const frameRate = setInterval(animationFrame, 1);
+	targetElement.classList.add('open', 'transition');
+
+	function animationFrame() {
+		targetElement.style.transform = 'rotateY(' + angle + 'deg)';
+
+		if(angle === -90) {
+			targetElement.classList.remove('transition');
+			targetElement.classList.add('show');
+		}
+
+		if(angle < 0) {
+			angle += 2;
+			targetElement.style.transform = 'rotateY(' + angle + 'deg)';
+		} else {
+			clearInterval(frameRate);
+			targetElement.style.transform = 'rotateY(' + angle + 'deg)';
+		}
+	}
+}
+
+/**
 * @description Display card's symbol
 * @function
 * @param event
 */
 function showCard(event){
-	// Verify whether the target is a card element and if is not already opened
-	if((event.target.nodeName.toLowerCase() === 'li') && !(event.target.classList.contains('open'))) {
-		event.target.classList.add('open', 'show');
+	// Verify whether the target is a card element and if is not already matched
+	if((event.target.nodeName.toLowerCase() === 'li') && !(event.target.classList.contains('match'))) {
+		// Verify whether the target is a card element and if is not already opened
+		if((event.target.nodeName.toLowerCase() === 'li') && !(event.target.classList.contains('open'))) {
+			flipCard(event.target);
 
-		// Remove event listener that call the timer's run function after the player's first move
-		// Remove listener from all the cards
-		let cardsEventListener = document.querySelector('.deck').querySelectorAll('.card');
-		for(const card of cardsEventListener) {
-			card.removeEventListener('click', runGameTimer);
+			// Remove event listener that call the timer's run function after the player's first move
+			// Remove listener from all the cards
+			let cardsEventListener = document.querySelector('.deck').querySelectorAll('.card');
+			for(const card of cardsEventListener) {
+				card.removeEventListener('click', runGameTimer);
+			}
+		}
+	}
+}
+
+/**
+* @description Create a effect for matching card
+* @function
+* @param targetElement The HTML target element
+*/
+function matchingCard(targetElement) {
+	const frameRate = setInterval(animationFrame, 50);
+	let width = 1;
+	let height = 1;
+	let scene = 'first';
+
+	targetElement.style.transform = 'scale(' + width + ',' + height + ')';
+
+	function animationFrame() {
+		switch(scene) {
+			case 'first':
+				width += 0.1;
+				height -= 0.1;
+				if(width > 1.2) {
+					scene = 'second';
+				}
+				targetElement.style.transform = 'scale(' + width + ',' + height + ')';
+				break;
+			case 'second':
+				width -= 0.2;
+				height += 0.2;
+				if(width < 0.8) {
+					scene = 'third';
+				}
+				targetElement.style.transform = 'scale(' + width + ',' + height + ')';
+				break;
+			case 'third':
+				width += 0.1;
+				height -= 0.1;
+				if(width >= 1) {
+					clearInterval(frameRate);
+				}
+				targetElement.style.transform = 'scale(' + width + ',' + height + ')';
+				break;
 		}
 	}
 }
@@ -237,11 +311,85 @@ function showCard(event){
 */
 function lockCards(cardOne, cardTwo){
 	// Remove class
-	cardOne.classList.remove('open', 'show');
-	cardTwo.classList.remove('open', 'show');
+	cardOne.classList.remove('open', 'show', 'transition');
+	cardTwo.classList.remove('open', 'show', 'transition');
 	// Add class
 	cardOne.classList.add('match');
 	cardTwo.classList.add('match');
+	// Add effect
+	matchingCard(cardOne);
+	matchingCard(cardTwo);
+}
+
+/**
+* @description Create a unflip card effect on the target element
+* @function
+* @param targetElement The HTML target element
+*/
+function unFlipCard(targetElement) {
+	let angle = 0;
+	const frameRateUnFlip = setInterval(animationFrame, 1);
+
+	function animationFrame() {
+		targetElement.style.transform = 'rotateY(' + angle + 'deg)';
+
+		if(angle === -90) {
+			targetElement.classList.remove('unpaired', 'show');
+		}
+
+		if(angle > -180) {
+			angle -= 2;
+			targetElement.style.transform = 'rotateY(' + angle + 'deg)';
+		} else {
+			clearInterval(frameRateUnFlip);
+			targetElement.style.transform = 'rotateY(0deg)';
+		}
+	}
+}
+
+/**
+* @description Create a effect for unpaired card
+* @function
+* @param targetElement The HTML target element
+*/
+function unpairedCard(targetElement) {
+	const frameRate = setInterval(animationFrame, 10);
+	let angle = 0;
+	let scene = 'first';
+
+	targetElement.style.transform = 'rotate(' + angle + 'deg)';
+
+	function animationFrame() {
+
+		switch(scene) {
+			case 'first':
+				if(angle > -10) {
+					angle -= 1;
+				} else {
+					scene = 'second';
+				}
+				targetElement.style.transform = 'rotate(' + angle + 'deg)';
+				break;
+			case 'second':
+				if(angle < 10) {
+					angle += 1;
+				} else {
+					scene = 'third';
+				}
+				targetElement.style.transform = 'rotate(' + angle + 'deg)';
+				break;
+			case 'third':
+				if(angle > 0) {
+					angle -= 1;
+					targetElement.style.transform = 'rotate(' + angle + 'deg)';
+				} else {
+					clearInterval(frameRate);
+					targetElement.style.transform = 'rotate(' + angle + 'deg)';
+					unFlipCard(targetElement);
+				}
+				break;
+		}
+	}
 }
 
 /**
@@ -252,8 +400,14 @@ function lockCards(cardOne, cardTwo){
 */
 function hideCards(cardOne, cardTwo){
 	// Remove class
-	cardOne.classList.remove('open', 'show');
-	cardTwo.classList.remove('open', 'show');
+	cardOne.classList.remove('open', 'transition');
+	cardTwo.classList.remove('open', 'transition');
+	// Add class
+	cardOne.classList.add('unpaired');
+	cardTwo.classList.add('unpaired');
+	// Add effect
+	unpairedCard(cardOne);
+	unpairedCard(cardTwo);
 }
 
 /**
@@ -261,28 +415,36 @@ function hideCards(cardOne, cardTwo){
 * @function
 */
 function compareCards(){
-	const pairOfCards = document.querySelector('.deck').querySelectorAll('.open');
+	// Verify whether the target is a card element and if is not already matched
+	if((event.target.nodeName.toLowerCase() === 'li') && !(event.target.classList.contains('match'))) {
+		// Verify whether the target is a card element and if is not already opened
+		if((event.target.nodeName.toLowerCase() === 'li') && !(event.target.classList.contains('open'))) {
 
-	if( pairOfCards[0].querySelector('i').className === pairOfCards[1].querySelector('i').className ) {
-		lockCards(pairOfCards[0], pairOfCards[1]);
-	} else {
-		setTimeout(function() {
-			hideCards(pairOfCards[0], pairOfCards[1]);
-		}, 500);
-	}
+			event.target.classList.add('open', 'transition');
 
-	// Increase one move to the counter
-	movesCounter.newMove();
-	rating.updateRating(movesCounter.moves);
+			// Store all the open cards
+			const pairOfCards = document.querySelector('.deck').querySelectorAll('.open');
 
-	// Store all the cards of the deck
-	const cardsTotal = document.querySelector('.deck').querySelectorAll('.card');
-	// Store all the matched cards of the deck
-	const cardsMatched = document.querySelector('.deck').querySelectorAll('.match');
-	// Check whether all the cards were matched
-	if( cardsMatched.length === cardsTotal.length ) {
-		clearInterval(gameTimer);
-		displayPopUp();
+			if( pairOfCards[0].querySelector('i').className === pairOfCards[1].querySelector('i').className ) {
+				lockCards(pairOfCards[0], pairOfCards[1]);
+			} else {
+				hideCards(pairOfCards[0], pairOfCards[1]);
+			}
+
+			// Increase one move to the counter
+			movesCounter.newMove();
+			rating.updateRating(movesCounter.moves);
+
+			// Store all the cards of the deck
+			const cardsTotal = document.querySelector('.deck').querySelectorAll('.card');
+			// Store all the matched cards of the deck
+			const cardsMatched = document.querySelector('.deck').querySelectorAll('.match');
+			// Check whether all the cards were matched
+			if( cardsMatched.length === cardsTotal.length ) {
+				clearInterval(gameTimer);
+				displayPopUp();
+			}
+		}
 	}
 }
 
@@ -302,15 +464,17 @@ function addListenerTimer() {
 * @function
 */
 function gameController(event) {
-	// Show card selected
-	showCard(event);
-
-	// Return the number of open cards in the deck
+	//Return the number of open cards in the deck
 	const openCards = verifyOpenCards();
 
+	// Show first card selected
+	if(openCards === 0) {
+		showCard(event);
+	}
+
 	// Compare two open cards
-	if(openCards === 2) {
-		compareCards();
+	if(openCards === 1) {
+		compareCards(event);
 	}
 }
 
